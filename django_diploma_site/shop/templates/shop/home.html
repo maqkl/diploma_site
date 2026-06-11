@@ -1,0 +1,65 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block title %}Главная - TechMarket{% endblock %}
+{% block content %}
+<section class="hero">
+    <div>
+        <div class="eyebrow">Django diploma project</div>
+        <h1>Магазин техники и IT-услуг</h1>
+        <p>Адаптивный сайт с каталогом, корзиной, избранным, авторизацией, регистрацией, формой обратной связи и тёмной темой.</p>
+        <div class="actions">
+            <a class="btn" href="{% url 'catalog' %}">Перейти в каталог</a>
+            <a class="btn secondary" href="{% url 'docs' %}">Инструкция</a>
+            <button class="btn secondary" type="button" onclick="history.back()">Назад</button>
+        </div>
+    </div>
+    <div class="slider" aria-label="Слайдер изображений">
+        <div class="slide active"><img src="{% static 'shop/img/hero_1.svg' %}" alt="Каталог техники"></div>
+        <div class="slide"><img src="{% static 'shop/img/hero_2.svg' %}" alt="IT услуги"></div>
+        <div class="slide"><img src="{% static 'shop/img/hero_3.svg' %}" alt="Корзина и избранное"></div>
+        <div class="slider-controls">
+            <button class="dot active" type="button" aria-label="Слайд 1"></button>
+            <button class="dot" type="button" aria-label="Слайд 2"></button>
+            <button class="dot" type="button" aria-label="Слайд 3"></button>
+        </div>
+    </div>
+</section>
+<section class="section grid grid-3">
+    <div class="card"><h3>Быстрый каталог</h3><p>Товары и услуги разбиты по категориям. Есть серверный фильтр и живой поиск на JavaScript.</p></div>
+    <div class="card"><h3>Корзина и избранное</h3><p>Данные хранятся в сессии пользователя. Есть кнопка очистки корзины с подтверждением.</p></div>
+    <div class="card"><h3>Тема интерфейса</h3><p>Светлая и тёмная тема сохраняются после обновления страницы через localStorage.</p></div>
+</section>
+<section class="section">
+    <h2>Популярные позиции</h2>
+    <div class="grid grid-3">
+        {% for product in products %}
+        <article class="card product-card">
+            <div class="product-image"><img src="{% static product.image %}" alt="{{ product.name }}"></div>
+            <span class="badge">{{ product.get_category_display }}</span>
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.short_description }}</p>
+            <div class="product-meta"><span class="price">€{{ product.price }}</span><span>★ {{ product.rating }}</span></div>
+            <div class="actions">
+                <form class="inline" method="post" action="{% url 'add_to_cart' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="home"><button class="btn small" type="submit">В корзину</button></form>
+                <form class="inline" method="post" action="{% url 'toggle_favorite' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="home"><button class="btn small secondary" type="submit">Избранное</button></form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+<section class="section card">
+    <h2>Таблица данных проекта</h2>
+    <p>Таблица нужна по критериям задания. Она показывает основные модули сайта.</p>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Модуль</th><th>Назначение</th><th>Технология</th><th>Статус</th></tr></thead>
+            <tbody>
+                <tr><td>Каталог</td><td>Просмотр товаров и услуг</td><td>Django ORM</td><td>Готово</td></tr>
+                <tr><td>Корзина</td><td>Сохранение выбранных позиций</td><td>Sessions</td><td>Готово</td></tr>
+                <tr><td>Избранное</td><td>Отложенные товары</td><td>Sessions</td><td>Готово</td></tr>
+                <tr><td>Контакты</td><td>Форма обратной связи</td><td>ModelForm</td><td>Готово</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,322 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TechMarket{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'shop/css/external.css' %}">
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #14213d;
+            --muted: #64748b;
+            --line: #dbe3ef;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent: #14b8a6;
+            --warning: #f97316;
+            --danger: #ef4444;
+            --shadow: 0 18px 45px rgba(15, 23, 42, 0.11);
+            --radius: 22px;
+        }
+        body.dark-theme {
+            --bg: #0b1220;
+            --card: #111827;
+            --text: #eef2ff;
+            --muted: #a7b4cc;
+            --line: #263244;
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --accent: #2dd4bf;
+            --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: radial-gradient(circle at top left, rgba(37,99,235,.13), transparent 32%), var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+        }
+        a { color: inherit; text-decoration: none; }
+        img { max-width: 100%; display: block; }
+        .container { width: min(1160px, calc(100% - 32px)); margin: 0 auto; }
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid var(--line);
+            background: color-mix(in srgb, var(--card) 88%, transparent);
+            backdrop-filter: blur(16px);
+        }
+        .nav-wrap { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 0; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .2px; }
+        .logo-mark { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), var(--accent)); display: grid; place-items: center; color: white; font-weight: 900; box-shadow: var(--shadow); }
+        .nav-menu { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .nav-menu a, .nav-menu button, .dropdown-toggle {
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            padding: 10px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .nav-menu a:hover, .nav-menu button:hover, .dropdown-toggle:hover { background: rgba(37, 99, 235, .12); }
+        .pill { background: rgba(20, 184, 166, .14); color: var(--accent); padding: 2px 8px; border-radius: 999px; font-size: 12px; }
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 44px;
+            width: 230px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            border-radius: 18px;
+            padding: 8px;
+        }
+        .dropdown.open .dropdown-content { display: grid; }
+        .dropdown-content a { border-radius: 12px; }
+        .main { min-height: 70vh; padding: 32px 0 52px; }
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            align-items: center;
+            gap: 30px;
+            padding: 34px;
+            border: 1px solid var(--line);
+            background: linear-gradient(135deg, color-mix(in srgb, var(--card) 92%, var(--primary)), var(--card));
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .eyebrow { color: var(--accent); font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: .12em; }
+        h1, h2, h3 { line-height: 1.15; margin: 0 0 14px; }
+        h1 { font-size: clamp(34px, 5vw, 62px); letter-spacing: -1.4px; }
+        h2 { font-size: clamp(26px, 3vw, 40px); }
+        h3 { font-size: 21px; }
+        p { color: var(--muted); margin: 0 0 14px; }
+        .actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+        .btn {
+            border: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 44px;
+            padding: 11px 18px;
+            border-radius: 14px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 12px 26px rgba(37, 99, 235, .24);
+        }
+        .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn.secondary { background: color-mix(in srgb, var(--text) 9%, transparent); color: var(--text); box-shadow: none; }
+        .btn.danger { background: var(--danger); }
+        .btn.warning { background: var(--warning); }
+        .btn.small { min-height: 36px; padding: 8px 12px; border-radius: 12px; font-size: 13px; }
+        .grid { display: grid; gap: 20px; }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .section { margin-top: 34px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 22px;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, .06);
+        }
+        .product-card { display: flex; flex-direction: column; min-height: 100%; }
+        .product-image { border-radius: 18px; background: linear-gradient(135deg, rgba(37,99,235,.12), rgba(20,184,166,.12)); margin-bottom: 16px; overflow: hidden; border: 1px solid var(--line); }
+        .product-meta { display: flex; justify-content: space-between; gap: 10px; align-items: center; margin: 10px 0; }
+        .price { font-size: 24px; font-weight: 900; color: var(--primary); }
+        .badge { display: inline-flex; padding: 6px 10px; border-radius: 999px; background: rgba(37, 99, 235, .12); color: var(--primary); font-weight: 800; font-size: 12px; }
+        .muted { color: var(--muted); }
+        .table-wrap { overflow-x: auto; border-radius: 18px; border: 1px solid var(--line); background: var(--card); }
+        table { width: 100%; border-collapse: collapse; min-width: 680px; }
+        th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; }
+        th { background: color-mix(in srgb, var(--primary) 12%, var(--card)); color: var(--text); }
+        tr:last-child td { border-bottom: 0; }
+        form.inline { display: inline; }
+        .form-grid { display: grid; gap: 14px; }
+        label { display: grid; gap: 7px; font-weight: 800; }
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 12px 14px;
+            background: var(--card);
+            color: var(--text);
+            font: inherit;
+            outline: none;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37,99,235,.12); }
+        .messages { display: grid; gap: 10px; margin-bottom: 18px; }
+        .message { border-radius: 14px; padding: 12px 14px; background: rgba(20,184,166,.12); border: 1px solid rgba(20,184,166,.3); color: var(--text); }
+        .errorlist { color: var(--danger); margin: 6px 0 0; }
+        .site-footer { border-top: 1px solid var(--line); background: var(--card); padding: 28px 0; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+        .slider { position: relative; min-height: 340px; border-radius: 24px; overflow: hidden; border: 1px solid var(--line); background: var(--card); }
+        .slide { display: none; height: 100%; padding: 24px; }
+        .slide.active { display: grid; place-items: center; }
+        .slider-controls { position: absolute; left: 18px; bottom: 18px; display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; border: 0; background: rgba(100,116,139,.45); cursor: pointer; }
+        .dot.active { background: var(--primary); }
+        .tooltip { position: relative; border-bottom: 1px dashed var(--muted); cursor: help; }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 0;
+            top: 130%;
+            width: 230px;
+            padding: 10px;
+            border-radius: 12px;
+            background: var(--text);
+            color: var(--card);
+            font-size: 13px;
+            z-index: 20;
+        }
+        #toTop { position: fixed; right: 18px; bottom: 18px; display: none; z-index: 60; }
+        .empty-state { text-align: center; padding: 48px 18px; }
+        .auth-box { max-width: 520px; margin: 0 auto; }
+        .breadcrumbs { margin-bottom: 18px; color: var(--muted); font-weight: 700; }
+        @media (max-width: 860px) {
+            .hero, .grid-2, .grid-3, .footer-grid { grid-template-columns: 1fr; }
+            .nav-wrap { align-items: flex-start; }
+            .nav-menu { justify-content: flex-end; }
+            .dropdown-content { right: auto; left: 0; }
+        }
+        @media (max-width: 560px) {
+            .container { width: min(100% - 22px, 1160px); }
+            .hero, .card { padding: 18px; }
+            .nav-menu a, .nav-menu button, .dropdown-toggle { padding: 8px 9px; font-size: 13px; }
+            .actions { align-items: stretch; }
+            .actions .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<header class="site-header">
+    <div class="container nav-wrap">
+        <a class="logo" href="{% url 'home' %}" aria-label="TechMarket">
+            <span class="logo-mark">TM</span>
+            <span>TechMarket</span>
+        </a>
+        <nav class="nav-menu" aria-label="Главное меню">
+            <a href="{% url 'home' %}">Главная</a>
+            <a href="{% url 'about' %}">О нас</a>
+            <a href="{% url 'catalog' %}">Каталог</a>
+            <a href="{% url 'contacts' %}">Контакты</a>
+            <a href="{% url 'cart' %}">Корзина <span class="pill">{{ cart_count }}</span></a>
+            <a href="{% url 'favorites' %}">Избранное <span class="pill">{{ favorites_count }}</span></a>
+            <div class="dropdown" data-dropdown>
+                <button class="dropdown-toggle" type="button">Ещё ▾</button>
+                <div class="dropdown-content">
+                    <a href="{% url 'docs' %}">Документация</a>
+                    {% if user.is_authenticated %}
+                        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button type="submit">Выйти: {{ user.username }}</button></form>
+                    {% else %}
+                        <a href="{% url 'login' %}">Вход</a>
+                        <a href="{% url 'register' %}">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+            <button id="themeToggle" type="button" title="Переключить тему">🌗</button>
+        </nav>
+    </div>
+</header>
+<main class="main">
+    <div class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+</main>
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <div class="logo"><span class="logo-mark">TM</span><span>TechMarket</span></div>
+            <p>Дипломный Django-сайт: каталог, корзина, избранное, формы и адаптивный интерфейс.</p>
+        </div>
+        <div>
+            <h3>Разделы</h3>
+            <p><a href="{% url 'catalog' %}">Каталог</a> · <a href="{% url 'contacts' %}">Контакты</a> · <a href="{% url 'docs' %}">Инструкция</a></p>
+        </div>
+        <div>
+            <h3>Социальные сети</h3>
+            <p><a href="https://t.me/" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a></p>
+        </div>
+    </div>
+</footer>
+<button id="toTop" class="btn small" type="button">Наверх ↑</button>
+<script>
+    // 1. Theme switcher with localStorage.
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') document.body.classList.add('dark-theme');
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+    });
+
+    // 2. Dropdown menu.
+    document.querySelectorAll('[data-dropdown]').forEach(dropdown => {
+        dropdown.querySelector('.dropdown-toggle').addEventListener('click', () => dropdown.classList.toggle('open'));
+    });
+    document.addEventListener('click', event => {
+        document.querySelectorAll('[data-dropdown]').forEach(dropdown => {
+            if (!dropdown.contains(event.target)) dropdown.classList.remove('open');
+        });
+    });
+
+    // 3. Back-to-top button.
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', () => { toTop.style.display = window.scrollY > 300 ? 'inline-flex' : 'none'; });
+    toTop.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+
+    // 4. Confirmation for dangerous actions.
+    document.querySelectorAll('[data-confirm]').forEach(form => {
+        form.addEventListener('submit', event => {
+            const text = form.getAttribute('data-confirm') || 'Подтвердить действие?';
+            if (!confirm(text)) event.preventDefault();
+        });
+    });
+
+    // 5. Simple slider.
+    const slides = [...document.querySelectorAll('.slide')];
+    const dots = [...document.querySelectorAll('.dot')];
+    let slideIndex = 0;
+    function showSlide(index) {
+        if (!slides.length) return;
+        slideIndex = index % slides.length;
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === slideIndex));
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === slideIndex));
+    }
+    dots.forEach((dot, i) => dot.addEventListener('click', () => showSlide(i)));
+    if (slides.length) setInterval(() => showSlide(slideIndex + 1), 4500);
+
+    // 6. Live catalog search on already loaded cards.
+    const liveSearch = document.getElementById('liveSearch');
+    if (liveSearch) {
+        liveSearch.addEventListener('input', () => {
+            const value = liveSearch.value.toLowerCase().trim();
+            document.querySelectorAll('[data-product-card]').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(value) ? '' : 'none';
+            });
+        });
+    }
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

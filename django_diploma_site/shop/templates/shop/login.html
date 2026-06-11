@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+{% block title %}Вход - TechMarket{% endblock %}
+{% block content %}
+<section class="card auth-box">
+    <h1>Вход</h1>
+    <p>Введите имя пользователя и пароль.</p>
+    <form class="form-grid" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label>Логин {{ form.username }} {{ form.username.errors }}</label>
+        <label>Пароль {{ form.password }} {{ form.password.errors }}</label>
+        <button class="btn" type="submit">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+</section>
+{% endblock %}

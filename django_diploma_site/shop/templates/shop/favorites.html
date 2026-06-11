@@ -1,0 +1,27 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block title %}Избранное - TechMarket{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'home' %}">Главная</a> / Избранное</div>
+<section class="card">
+    <h1>Избранное</h1>
+    <p>Здесь отображаются товары и услуги, которые пользователь отметил кнопкой «Избранное».</p>
+</section>
+<section class="section grid grid-3">
+    {% for product in products %}
+    <article class="card product-card">
+        <div class="product-image"><img src="{% static product.image %}" alt="{{ product.name }}"></div>
+        <span class="badge">{{ product.get_category_display }}</span>
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.short_description }}</p>
+        <div class="product-meta"><span class="price">€{{ product.price }}</span><span>★ {{ product.rating }}</span></div>
+        <div class="actions">
+            <form class="inline" method="post" action="{% url 'add_to_cart' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="favorites"><button class="btn small" type="submit">В корзину</button></form>
+            <form class="inline" method="post" action="{% url 'toggle_favorite' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="favorites"><button class="btn small danger" type="submit">Убрать</button></form>
+        </div>
+    </article>
+    {% empty %}
+    <div class="card empty-state"><h3>Избранное пустое</h3><p>Добавьте позиции из каталога.</p><a class="btn" href="{% url 'catalog' %}">Открыть каталог</a></div>
+    {% endfor %}
+</section>
+{% endblock %}

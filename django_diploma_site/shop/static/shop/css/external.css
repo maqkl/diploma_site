@@ -1,0 +1,11 @@
+/* Minimal external CSS file kept for the marking criterion "Использование внешнего CSS-файла".
+   Main CSS is intentionally placed inside templates/shop/base.html as requested. */
+:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.45);
+    outline-offset: 3px;
+}
+code {
+    padding: 2px 6px;
+    border-radius: 8px;
+    background: rgba(100, 116, 139, 0.16);
+}

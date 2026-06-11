@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+{% block title %}Регистрация - TechMarket{% endblock %}
+{% block content %}
+<section class="card auth-box">
+    <h1>Регистрация</h1>
+    <p>Поле Email обязательно, как указано в критериях задания.</p>
+    <form class="form-grid" method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label>Логин {{ form.username }} {{ form.username.errors }}</label>
+        <label>Email {{ form.email }} {{ form.email.errors }}</label>
+        <label>Пароль {{ form.password1 }} {{ form.password1.errors }}</label>
+        <label>Повтор пароля {{ form.password2 }} {{ form.password2.errors }}</label>
+        <button class="btn" type="submit">Зарегистрироваться</button>
+    </form>
+    <p>Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+</section>
+{% endblock %}

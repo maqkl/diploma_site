@@ -1,0 +1,29 @@
+{% extends 'shop/base.html' %}
+{% block title %}Контакты - TechMarket{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'home' %}">Главная</a> / Контакты</div>
+<section class="grid grid-2">
+    <div class="card">
+        <h1>Контакты</h1>
+        <p>Форма обратной связи сохраняет данные в базу. Email проверяется средствами Django.</p>
+        <p><strong>Адрес:</strong> Алматы, Казахстан</p>
+        <p><strong>Email:</strong> info@example.com</p>
+        <p><strong>Телефон:</strong> +7 701 123 45 67</p>
+        <div class="actions">
+            <a class="btn secondary" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
+            <a class="btn secondary" href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a>
+        </div>
+    </div>
+    <div class="card">
+        <h2>Форма обратной связи</h2>
+        <form class="form-grid" method="post" novalidate>
+            {% csrf_token %}
+            <label>Имя {{ form.name }} {{ form.name.errors }}</label>
+            <label>Email {{ form.email }} {{ form.email.errors }}</label>
+            <label>Тема {{ form.topic }} {{ form.topic.errors }}</label>
+            <label>Сообщение {{ form.message }} {{ form.message.errors }}</label>
+            <button class="btn" type="submit">Отправить</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

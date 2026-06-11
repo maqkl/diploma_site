@@ -1,0 +1,63 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block title %}Каталог - TechMarket{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'home' %}">Главная</a> / Каталог</div>
+<section class="card">
+    <h1>Каталог товаров и услуг</h1>
+    <p>Используйте серверный поиск или быстрый JS-фильтр по уже загруженным карточкам.</p>
+    <form class="form-grid" method="get">
+        <div class="grid grid-3">
+            <label>Поиск
+                <input name="q" value="{{ query }}" placeholder="Например: ноутбук, чистка, Django">
+            </label>
+            <label>Категория
+                <select name="category">
+                    <option value="">Все категории</option>
+                    {% for key, label in categories %}
+                        <option value="{{ key }}" {% if category == key %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Живой фильтр JS
+                <input id="liveSearch" placeholder="Фильтр без перезагрузки">
+            </label>
+        </div>
+        <div class="actions">
+            <button class="btn" type="submit">Найти</button>
+            <a class="btn secondary" href="{% url 'catalog' %}">Сбросить</a>
+        </div>
+    </form>
+</section>
+<section class="section grid grid-3">
+    {% for product in products %}
+    <article class="card product-card" data-product-card>
+        <div class="product-image"><img src="{% static product.image %}" alt="{{ product.name }}"></div>
+        <span class="badge">{{ product.get_category_display }}</span>
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.short_description }}</p>
+        <p class="muted">{{ product.description }}</p>
+        <div class="product-meta"><span class="price">€{{ product.price }}</span><span>★ {{ product.rating }}</span></div>
+        <div class="actions">
+            <form class="inline" method="post" action="{% url 'add_to_cart' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="catalog"><button class="btn small" type="submit">В корзину</button></form>
+            <form class="inline" method="post" action="{% url 'toggle_favorite' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="catalog"><button class="btn small secondary" type="submit">{% if product.id in favorites_ids %}Убрать ♥{% else %}В избранное ♥{% endif %}</button></form>
+        </div>
+    </article>
+    {% empty %}
+    <div class="card empty-state"><h3>Ничего не найдено</h3><p>Измените поисковый запрос или категорию.</p></div>
+    {% endfor %}
+</section>
+<section class="section card">
+    <h2>Сравнительная таблица</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Категория</th><th>Средняя цена</th><th>Пример</th><th>Назначение</th></tr></thead>
+            <tbody>
+                <tr><td>Ноутбуки</td><td>€449-1299</td><td>NovaBook Air 14</td><td>Учёба, работа, разработка</td></tr>
+                <tr><td>Аксессуары</td><td>€39-89</td><td>Travel Dock 8-in-1</td><td>Расширение возможностей техники</td></tr>
+                <tr><td>Услуги</td><td>€30-120</td><td>Настройка сайта на Django</td><td>Поддержка и настройка</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

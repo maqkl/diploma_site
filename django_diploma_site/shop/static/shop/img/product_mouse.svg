@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" role="img" aria-label="Mouse">
+<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#2563eb"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs>
+<rect width="640" height="420" rx="36" fill="#eef4ff"/>
+<circle cx="520" cy="72" r="74" fill="url(#g)" opacity=".22"/>
+<circle cx="94" cy="342" r="98" fill="#14b8a6" opacity=".16"/>
+<rect x="120" y="100" width="400" height="230" rx="24" fill="white" stroke="#dbe3ef" stroke-width="5"/>
+<rect x="155" y="135" width="330" height="34" rx="12" fill="url(#g)" opacity=".9"/>
+<rect x="155" y="195" width="210" height="22" rx="11" fill="#cbd5e1"/>
+<rect x="155" y="235" width="270" height="22" rx="11" fill="#cbd5e1"/>
+<rect x="155" y="275" width="150" height="34" rx="17" fill="#2563eb"/>
+<text x="320" y="375" text-anchor="middle" font-family="Arial" font-size="34" font-weight="700" fill="#14213d">Mouse</text>
+</svg>

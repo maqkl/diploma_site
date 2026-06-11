@@ -1,0 +1,33 @@
+{% extends 'shop/base.html' %}
+{% block title %}Корзина - TechMarket{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'home' %}">Главная</a> / Корзина</div>
+<section class="card">
+    <h1>Корзина</h1>
+    {% if items %}
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Название</th><th>Количество</th><th>Цена</th><th>Сумма</th><th>Действие</th></tr></thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>€{{ item.product.price }}</td>
+                    <td>€{{ item.line_total }}</td>
+                    <td><form class="inline" method="post" action="{% url 'remove_from_cart' item.product.id %}" data-confirm="Удалить позицию из корзины?">{% csrf_token %}<button class="btn small danger" type="submit">Удалить</button></form></td>
+                </tr>
+                {% endfor %}
+                <tr><th colspan="3">Итого</th><th>€{{ total }}</th><th></th></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="actions">
+        <a class="btn" href="{% url 'catalog' %}">Продолжить покупки</a>
+        <form method="post" action="{% url 'clear_cart' %}" data-confirm="Вы точно хотите очистить корзину?">{% csrf_token %}<button class="btn danger" type="submit">Очистить корзину</button></form>
+    </div>
+    {% else %}
+    <div class="empty-state"><h3>Корзина пустая</h3><p>Добавьте позиции из каталога.</p><a class="btn" href="{% url 'catalog' %}">Открыть каталог</a></div>
+    {% endif %}
+</section>
+{% endblock %}
