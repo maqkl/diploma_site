@@ -11,7 +11,7 @@
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td>{{ item.product.name }}</td>
+                    <td><a href="{% url 'product_detail' item.product.id %}">{{ item.product.name }}</a></td>
                     <td>{{ item.quantity }}</td>
                     <td>€{{ item.product.price }}</td>
                     <td>€{{ item.line_total }}</td>
@@ -23,7 +23,8 @@
         </table>
     </div>
     <div class="actions">
-        <a class="btn" href="{% url 'catalog' %}">Продолжить покупки</a>
+        <a class="btn" href="{% url 'checkout' %}">Оформить заказ</a>
+        <a class="btn secondary" href="{% url 'catalog' %}">Продолжить покупки</a>
         <form method="post" action="{% url 'clear_cart' %}" data-confirm="Вы точно хотите очистить корзину?">{% csrf_token %}<button class="btn danger" type="submit">Очистить корзину</button></form>
     </div>
     {% else %}

@@ -39,6 +39,7 @@
         <p class="muted">{{ product.description }}</p>
         <div class="product-meta"><span class="price">€{{ product.price }}</span><span>★ {{ product.rating }}</span></div>
         <div class="actions">
+            <a class="btn small secondary" href="{% url 'product_detail' product.id %}">Подробнее</a>
             <form class="inline" method="post" action="{% url 'add_to_cart' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="catalog"><button class="btn small" type="submit">В корзину</button></form>
             <form class="inline" method="post" action="{% url 'toggle_favorite' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="catalog"><button class="btn small secondary" type="submit">{% if product.id in favorites_ids %}Убрать ♥{% else %}В избранное ♥{% endif %}</button></form>
         </div>

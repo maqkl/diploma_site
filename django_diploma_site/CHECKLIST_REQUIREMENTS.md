@@ -10,9 +10,9 @@
 - Единая цветовая гамма: CSS-переменные в `base.html`.
 - Единый стиль оформления: общий базовый шаблон `base.html`.
 - Заголовки и отступы: стили `h1`, `h2`, `h3`, `.section`, `.card`.
-- Изображения: SVG-файлы в `shop/static/shop/img/`.
+- Изображения: SVG-файлы и реальные изображения в `shop/static/shop/img/`.
 - Таблица данных: `home.html`, `catalog.html`, `docs.html`.
-- Форма ввода данных: `contacts.html`, `register.html`, `login.html`.
+- Форма ввода данных: `contacts.html`, `register.html`, `login.html`, `checkout.html`.
 - Карточки товаров/услуг: `catalog.html`, `home.html`, `favorites.html`.
 - Мобильная адаптация: media queries в `base.html`.
 - CSS-стили: основной CSS внутри `base.html`.
@@ -26,18 +26,20 @@
 - Фильтр поиска: `catalog` view и JS-поле `liveSearch`.
 - Подвал и навигация на всех страницах: наследование от `base.html`.
 - Избранное: session list `favorites`, view `toggle_favorite`.
+- Подробная страница товара: `product_detail.html`.
+- Оформление заказа: `checkout.html`.
 
 ## A2 - Базовая функциональность
 
 - Переход между страницами: `shop/urls.py` и навигация.
 - Кнопка «Главная»: nav link в `base.html`.
 - Кнопка «О нас»: nav link в `base.html`.
-- Кнопка «Назад»: `home.html`, `about.html`.
+- Кнопка «Назад»: `home.html`, `about.html`, `product_detail.html`.
 - Кнопка «Наверх»: JS в `base.html`.
 - Кнопка «Контакты»: nav link в `base.html`.
 - Выпадающее меню: `.dropdown` и JS в `base.html`.
-- Гиперссылки: меню, footer, social links.
-- Проверка Email: Django `EmailField` в `ContactForm` и `RegistrationForm`.
+- Гиперссылки: меню, footer, social links, ссылки на страницы товаров.
+- Проверка Email: Django `EmailField` в `ContactForm`, `RegistrationForm`, `CheckoutForm`.
 - Сообщение об ошибке: Django messages + field errors.
 - Сообщение об успешной отправке: `messages.success` в `contacts`.
 - Поиск по странице: `liveSearch` в `catalog.html`.
@@ -52,16 +54,21 @@
 - Сохранение темы: `localStorage`.
 - Всплывающие подсказки: `.tooltip` в CSS и пример в `about.html`.
 - JS без сторонних библиотек: весь JS расположен в `base.html`.
+- Сохранение заказов в базе данных: модели `Order` и `OrderItem`.
+- Просмотр заказов в админ-панели: `OrderAdmin` и `OrderItemInline`.
+- Страница успешного заказа: `order_success.html`.
 
 ## B2 - Код и архитектура
 
 - Больше 5 комментариев: комментарии есть в Python-коде, JS и CSS.
 - Предупреждения/подтверждения: `data-confirm` для удаления и очистки корзины.
 - Отступы и форматирование: файлы разделены по Django-структуре.
-- Понятные имена переменных: `cart_data`, `favorites`, `products`, `query`, `category`.
+- Понятные имена переменных: `cart_data`, `favorites`, `products`, `query`, `category`, `order`.
 - Популярные браузеры: используются стандартные HTML/CSS/JS без нестабильных библиотек.
 - Удобный интерфейс: карточки, кнопки, сообщения, адаптивная сетка.
 - Заполняемость каталога: команда `python manage.py seed_demo` создаёт 10 позиций.
+- Архитектура: отдельные models, forms, views, urls, templates.
+- Повторное использование логики корзины: функция `get_cart_items`.
 
 ## C1-C3 - Документация
 
@@ -69,3 +76,4 @@
 - Инструкция установки: `README.md` и `docs.html`.
 - Инструкция эксплуатации: `README.md` и `docs.html`.
 - Схема работы: таблица «Схема работы» в `docs.html`.
+- Описание бонусных функций: `README.md` и этот checklist.

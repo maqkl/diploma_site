@@ -6,7 +6,7 @@
     <div>
         <div class="eyebrow">Django diploma project</div>
         <h1>Магазин техники и IT-услуг</h1>
-        <p>Адаптивный сайт с каталогом, корзиной, избранным, авторизацией, регистрацией, формой обратной связи и тёмной темой.</p>
+        <p>Адаптивный сайт с каталогом, корзиной, избранным, оформлением заказа, авторизацией, регистрацией, формой обратной связи и тёмной темой.</p>
         <div class="actions">
             <a class="btn" href="{% url 'catalog' %}">Перейти в каталог</a>
             <a class="btn secondary" href="{% url 'docs' %}">Инструкция</a>
@@ -26,7 +26,7 @@
 </section>
 <section class="section grid grid-3">
     <div class="card"><h3>Быстрый каталог</h3><p>Товары и услуги разбиты по категориям. Есть серверный фильтр и живой поиск на JavaScript.</p></div>
-    <div class="card"><h3>Корзина и избранное</h3><p>Данные хранятся в сессии пользователя. Есть кнопка очистки корзины с подтверждением.</p></div>
+    <div class="card"><h3>Корзина и заказ</h3><p>Корзина хранится в сессии, а оформленный заказ сохраняется в базе данных и доступен в админке.</p></div>
     <div class="card"><h3>Тема интерфейса</h3><p>Светлая и тёмная тема сохраняются после обновления страницы через localStorage.</p></div>
 </section>
 <section class="section">
@@ -40,6 +40,7 @@
             <p>{{ product.short_description }}</p>
             <div class="product-meta"><span class="price">€{{ product.price }}</span><span>★ {{ product.rating }}</span></div>
             <div class="actions">
+                <a class="btn small secondary" href="{% url 'product_detail' product.id %}">Подробнее</a>
                 <form class="inline" method="post" action="{% url 'add_to_cart' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="home"><button class="btn small" type="submit">В корзину</button></form>
                 <form class="inline" method="post" action="{% url 'toggle_favorite' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="home"><button class="btn small secondary" type="submit">Избранное</button></form>
             </div>
@@ -55,8 +56,9 @@
             <thead><tr><th>Модуль</th><th>Назначение</th><th>Технология</th><th>Статус</th></tr></thead>
             <tbody>
                 <tr><td>Каталог</td><td>Просмотр товаров и услуг</td><td>Django ORM</td><td>Готово</td></tr>
+                <tr><td>Страница товара</td><td>Подробное описание позиции</td><td>Dynamic URL</td><td>Готово</td></tr>
                 <tr><td>Корзина</td><td>Сохранение выбранных позиций</td><td>Sessions</td><td>Готово</td></tr>
-                <tr><td>Избранное</td><td>Отложенные товары</td><td>Sessions</td><td>Готово</td></tr>
+                <tr><td>Оформление заказа</td><td>Сохранение заказа и состава заказа</td><td>ModelForm + ORM</td><td>Готово</td></tr>
                 <tr><td>Контакты</td><td>Форма обратной связи</td><td>ModelForm</td><td>Готово</td></tr>
             </tbody>
         </table>

@@ -5,8 +5,8 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
-from .forms import ContactForm, RegistrationForm
-from .models import Product
+from .forms import CheckoutForm, ContactForm, RegistrationForm
+from .models import Order, OrderItem, Product
 
 
 def ensure_demo_products():
@@ -110,6 +110,36 @@ def ensure_demo_products():
     Product.objects.bulk_create(Product(**item) for item in products)
 
 
+def get_cart_items(request):
+    """Returns cart rows and total price from the current session."""
+
+    cart_data = request.session.get('cart', {})
+    items = []
+    total = Decimal('0.00')
+
+    for product_id, quantity in cart_data.items():
+        try:
+            product = Product.objects.get(id=int(product_id))
+            quantity = int(quantity)
+        except (Product.DoesNotExist, ValueError):
+            continue
+
+        line_total = product.price * quantity
+        total += line_total
+        items.append({'product': product, 'quantity': quantity, 'line_total': line_total})
+
+    return items, total
+
+
+def redirect_after_action(request, product_id=None, default='catalog'):
+    """Redirects buttons back to the requested page."""
+
+    next_page = request.POST.get('next', default)
+    if next_page == 'product_detail' and product_id:
+        return redirect('product_detail', product_id=product_id)
+    return redirect(next_page)
+
+
 def home(request):
     ensure_demo_products()
     products = Product.objects.all()[:6]
@@ -147,18 +177,70 @@ def catalog(request):
     })
 
 
+def product_detail(request, product_id):
+    ensure_demo_products()
+    product = get_object_or_404(Product, id=product_id)
+    similar_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:3]
+    favorites_ids = [int(item) for item in request.session.get('favorites', [])]
+    return render(request, 'shop/product_detail.html', {
+        'product': product,
+        'similar_products': similar_products,
+        'is_favorite': product.id in favorites_ids,
+    })
+
+
 def cart(request):
-    cart_data = request.session.get('cart', {})
-    items = []
-    total = Decimal('0.00')
-
-    for product_id, quantity in cart_data.items():
-        product = get_object_or_404(Product, id=int(product_id))
-        line_total = product.price * int(quantity)
-        total += line_total
-        items.append({'product': product, 'quantity': int(quantity), 'line_total': line_total})
-
+    items, total = get_cart_items(request)
     return render(request, 'shop/cart.html', {'items': items, 'total': total})
+
+
+def checkout(request):
+    items, total = get_cart_items(request)
+    if not items:
+        messages.error(request, 'Корзина пустая. Добавьте товары перед оформлением заказа.')
+        return redirect('cart')
+
+    initial = {}
+    if request.user.is_authenticated:
+        initial = {
+            'full_name': request.user.get_full_name() or request.user.username,
+            'email': request.user.email,
+        }
+
+    if request.method == 'POST':
+        form = CheckoutForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            if request.user.is_authenticated:
+                order.user = request.user
+            order.total_price = total
+            order.save()
+
+            for item in items:
+                product = item['product']
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    product_name=product.name,
+                    quantity=item['quantity'],
+                    price=product.price,
+                    line_total=item['line_total'],
+                )
+
+            request.session['cart'] = {}
+            messages.success(request, f'Заказ #{order.id} успешно оформлен.')
+            return redirect('order_success', order_id=order.id)
+
+        messages.error(request, 'Проверьте данные заказа.')
+    else:
+        form = CheckoutForm(initial=initial)
+
+    return render(request, 'shop/checkout.html', {'form': form, 'items': items, 'total': total})
+
+
+def order_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'shop/order_success.html', {'order': order})
 
 
 def favorites(request):
@@ -207,7 +289,7 @@ def add_to_cart(request, product_id):
     cart_data[key] = int(cart_data.get(key, 0)) + 1
     request.session['cart'] = cart_data
     messages.success(request, f'«{product.name}» добавлен в корзину.')
-    return redirect(request.POST.get('next', 'catalog'))
+    return redirect_after_action(request, product_id=product.id)
 
 
 @require_POST
@@ -237,4 +319,4 @@ def toggle_favorite(request, product_id):
         favorites.append(product.id)
         messages.success(request, f'«{product.name}» добавлен в избранное.')
     request.session['favorites'] = favorites
-    return redirect(request.POST.get('next', 'catalog'))
+    return redirect_after_action(request, product_id=product.id)

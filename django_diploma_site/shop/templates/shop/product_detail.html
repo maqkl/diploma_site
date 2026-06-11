@@ -1,0 +1,41 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block title %}{{ product.name }} - TechMarket{% endblock %}
+{% block content %}
+<div class="breadcrumbs"><a href="{% url 'home' %}">Главная</a> / <a href="{% url 'catalog' %}">Каталог</a> / {{ product.name }}</div>
+<section class="card">
+    <div class="grid grid-2">
+        <div class="product-image"><img src="{% static product.image %}" alt="{{ product.name }}"></div>
+        <div>
+            <span class="badge">{{ product.get_category_display }}</span>
+            <h1>{{ product.name }}</h1>
+            <p>{{ product.short_description }}</p>
+            <p>{{ product.description }}</p>
+            <div class="product-meta"><span class="price">€{{ product.price }}</span><span>★ {{ product.rating }}</span></div>
+            <p>{% if product.in_stock %}В наличии{% else %}Нет в наличии{% endif %}</p>
+            <div class="actions">
+                <form class="inline" method="post" action="{% url 'add_to_cart' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="product_detail"><button class="btn" type="submit">Добавить в корзину</button></form>
+                <form class="inline" method="post" action="{% url 'toggle_favorite' product.id %}">{% csrf_token %}<input type="hidden" name="next" value="product_detail"><button class="btn secondary" type="submit">{% if is_favorite %}Убрать из избранного ♥{% else %}В избранное ♥{% endif %}</button></form>
+                <button class="btn secondary" type="button" onclick="history.back()">Назад</button>
+            </div>
+        </div>
+    </div>
+</section>
+{% if similar_products %}
+<section class="section">
+    <h2>Похожие позиции</h2>
+    <div class="grid grid-3">
+        {% for item in similar_products %}
+        <article class="card product-card">
+            <div class="product-image"><img src="{% static item.image %}" alt="{{ item.name }}"></div>
+            <span class="badge">{{ item.get_category_display }}</span>
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.short_description }}</p>
+            <div class="product-meta"><span class="price">€{{ item.price }}</span><span>★ {{ item.rating }}</span></div>
+            <div class="actions"><a class="btn small secondary" href="{% url 'product_detail' item.id %}">Подробнее</a></div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}
